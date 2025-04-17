@@ -5,7 +5,17 @@ module.exports = {
     "./blog/*.html"
   ],
   theme: {
-    extend: {},
+    screens: {
+      sm: {'max': '767px'},
+      'tablet': {'min': '768px', 'max': '1023px'},
+      lg: '1024px',
+      xl: '1280px',
+    },
+    extend: {
+      boxShadow: {
+        'link-shadow': '0 1px 0 #000000',
+      },
+    },
   },
   plugins: [],
 }

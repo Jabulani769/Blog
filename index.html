@@ -2,9 +2,84 @@
 <html>
 <head>
   <title>Jabu's Blog</title>
+  <link rel="icon" src="assets/images/pic2.jpg">
   <link href="./dist/output.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-[#FAEBD7] scroll-smooth">
+  <header id="heading" class="fixed w-full top-0 bg-[#FAEBD7]">
+    <section id="mainConatainer-h" class="flex justify-between items-center py-8">
+      <div> <!--sub containers-->
+          <h1 class="pl-6">JABU'S <span class="text-[#9a7d0a]">Blog</span></h1>
+      </div>
 
+      <div> <!--sub containers-->
+          <nav class="flex w-[100%] gap-10">
+            <li class="list-none cursor-pointer hover:shadow-link-shadow">Blogs</li>
+            <li class="list-none cursor-pointer hover:shadow-link-shadow">About</li>
+            <li class="list-none cursor-pointer hover:shadow-link-shadow">Home</li>
+            <li class="list-none cursor-pointer hover:shadow-link-shadow">Contact</li>
+          </nav>
+      </div>
+
+      <div> <!--sub containers-->
+        <!-- icons -->
+      </div>
+    </section>
+  </header>
+
+  <section id="welcome" class="mt-[35vh]">
+      <main id="body">
+      <h1 class="text-center font-serif  text-[50px]">Welcome to My Journey  of <br> Discovery and Growth</h1>
+      <p class="text-center">A space where I share insights, reflection and milestoness <br> as I navigate life, tech and personal development</p>
+
+      <div class="m-auto w-[15%]">
+        <button class="w-full h-full text-white bg-[#9a7d0a] hover:bg-[#9a7d3ae3] transition-all duration-200 py-6 my-14">GET INSPIRED</button>
+      </div>
+
+      <div id="images" class="flex h-[70vh] w-full">
+        <div class="w-[85%] h-full m-auto flex justify-between">
+          <img src="assets/images/pic1.JPG" alt="my-image1" class="h-[85%] self-center">
+          <img src="assets/images/pic2.jpg" alt="my-image2" class="h-full"> 
+          <img src="assets/images/pic3.jpg" alt="my-image3" class="h-[85%] self-center">
+        </div>
+
+      </div>
+    </section>
+
+    <section id="my-blogs">
+      <h1 class="text-center text-[40px] my-20">My featured <span class="text-[#9a7d0a]">Blogs</span></h1>
+      <div id="mainContainer" class="font-serif text-[20px] border flex justify-center gap-4">
+        <!-- the featured blogs containers -->
+        <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+          <div class="h-[45vh]">
+          <img src="assets/images/voting.jpg" alt="holding-img" class="w-full h-full">
+          </div>
+          <h1 class="py-4">Building a Voting System in C</h1>
+          <p class="text-[#272727]">Learn how i created a simple but yet powerful terminal-based voting system.</p>
+
+          <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
+        </div>
+
+        <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+          <div class="h-[45vh]">
+            <img src="assets/images/community.jpeg" alt="holding-img" class="w-full h-full">
+          </div>
+          <h1 class="py-4">WhatsApp Tech Community</h1>
+          <p class="text-[#272727]">Here's how I created a growing WhatsApp space for coders to learn, share projects and run weekly coding challenges</p>
+
+          <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
+        </div>
+
+        <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+          <div class="h-[45vh]">
+            <img src="assets/images/UX.jpg" alt="holding-img" class="w-full h-full">
+          </div>
+          <h1 class="py-4">Qt GUI Upgrade for the Voting System</h1>
+          <p class="text-[#272727]">See how I am about to tranlate a basic terminal-based voting system into having a GUI</p> 
+
+          <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
+        </div>  
+      </div>
+    </section>
 </body>
 </html>
