@@ -2,11 +2,12 @@
 <html>
 <head>
   <title>Jabu's Blog</title>
-  <link rel="icon" src="assets/images/pic2.jpg">
+  <link rel="icon" type="image/jpg" href="assets/images/pic3.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <link href="./dist/output.css" rel="stylesheet">
 </head>
-<body class="bg-[#FAEBD7] scroll-smooth">
-  <header id="heading" class="fixed w-full top-0 bg-[#FAEBD7]">
+<body>
+  <header class="fixed w-full top-0 bg-[#FAEBD7]">
     <section id="mainConatainer-h" class="flex justify-between items-center py-8">
       <div> <!--sub containers-->
           <h1 class="pl-6">JABU'S <span class="text-[#9a7d0a]">Blog</span></h1>
@@ -14,10 +15,10 @@
 
       <div> <!--sub containers-->
           <nav class="flex w-[100%] gap-10">
-            <li class="list-none cursor-pointer hover:shadow-link-shadow">Blogs</li>
-            <li class="list-none cursor-pointer hover:shadow-link-shadow">About</li>
-            <li class="list-none cursor-pointer hover:shadow-link-shadow">Home</li>
-            <li class="list-none cursor-pointer hover:shadow-link-shadow">Contact</li>
+            <a href="#welcome"><li class="list-none cursor-pointer hover:shadow-link-shadow">Home</li></a>
+            <a href="#"><li class="list-none cursor-pointer hover:shadow-link-shadow">Blogs</li></a>
+            <a href="#"><li class="list-none cursor-pointer hover:shadow-link-shadow">About</li></a>
+            <a href="#"><li class="list-none cursor-pointer hover:shadow-link-shadow">Contact</li></a>
           </nav>
       </div>
 
@@ -27,59 +28,87 @@
     </section>
   </header>
 
-  <section id="welcome" class="mt-[35vh]">
-      <main id="body">
-      <h1 class="text-center font-serif  text-[50px]">Welcome to My Journey  of <br> Discovery and Growth</h1>
-      <p class="text-center">A space where I share insights, reflection and milestoness <br> as I navigate life, tech and personal development</p>
+  <main id="body">
+    <section id="welcome" class="mt-[30vh]">
+        <h1 class="text-center font-serif  text-[50px]">Welcome to My Journey  of <br> Discovery and Growth</h1>
+        <p class="text-center">A space where I share insights, reflection and milestoness <br> as I navigate life, tech and personal development.</p>
 
-      <div class="m-auto w-[15%]">
-        <button class="w-full h-full text-white bg-[#9a7d0a] hover:bg-[#9a7d3ae3] transition-all duration-200 py-6 my-14">GET INSPIRED</button>
-      </div>
-
-      <div id="images" class="flex h-[70vh] w-full">
-        <div class="w-[85%] h-full m-auto flex justify-between">
-          <img src="assets/images/pic1.JPG" alt="my-image1" class="h-[85%] self-center">
-          <img src="assets/images/pic2.jpg" alt="my-image2" class="h-full"> 
-          <img src="assets/images/pic3.jpg" alt="my-image3" class="h-[85%] self-center">
+        <div class="m-auto w-[15%]">
+          <button class="w-full h-full text-white bg-[#9a7d0a] hover:bg-[#9a7d3ae3] transition-all duration-200 py-6 my-14">GET INSPIRED</button>
         </div>
 
-      </div>
-    </section>
-
-    <section id="my-blogs">
-      <h1 class="text-center text-[40px] my-20">My featured <span class="text-[#9a7d0a]">Blogs</span></h1>
-      <div id="mainContainer" class="font-serif text-[20px] border flex justify-center gap-4">
-        <!-- the featured blogs containers -->
-        <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
-          <div class="h-[45vh]">
-          <img src="assets/images/voting.jpg" alt="holding-img" class="w-full h-full">
+        <div id="images" class="flex h-[70vh] w-full">
+          <div class="w-[85%] h-full m-auto flex justify-between">
+            <img src="assets/images/pic1.JPG" alt="my-image1" class="h-[85%] self-center">
+            <img src="assets/images/pic2.jpg" alt="my-image2" class="h-full"> 
+            <img src="assets/images/pic3.jpg" alt="my-image3" class="h-[85%] self-center">
           </div>
-          <h1 class="py-4">Building a Voting System in C</h1>
-          <p class="text-[#272727]">Learn how i created a simple but yet powerful terminal-based voting system.</p>
 
-          <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
         </div>
+      </section>
 
-        <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
-          <div class="h-[45vh]">
-            <img src="assets/images/community.jpeg" alt="holding-img" class="w-full h-full">
+      <section id="my-blogs">
+        <h1 class="text-center text-[40px] my-20">My featured <span class="text-[#9a7d0a]">Blogs</span></h1>
+        <div id="mainContainer" class="font-serif text-[20px] border flex justify-center gap-4">
+          <!-- the featured blogs containers -->
+          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+            <div class="h-[45vh]">
+            <img src="assets/images/voting.jpg" alt="holding-img" class="w-full h-full">
+            </div>
+            <h1 class="py-4">Building a Voting System in C</h1>
+            <p class="text-[#272727]">Learn how I created a simple but yet powerful terminal-based voting system.</p>
+
+            <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
           </div>
-          <h1 class="py-4">WhatsApp Tech Community</h1>
-          <p class="text-[#272727]">Here's how I created a growing WhatsApp space for coders to learn, share projects and run weekly coding challenges</p>
 
-          <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
+          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+            <div class="h-[45vh]">
+              <img src="assets/images/community.jpeg" alt="holding-img" class="w-full h-full">
+            </div>
+            <h1 class="py-4">WhatsApp Tech Community</h1>
+            <p class="text-[#272727]">Here's how I created a growing WhatsApp space for coders to learn, share projects.</p>
+
+            <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
+          </div>
+
+          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+            <div class="h-[45vh]">
+              <img src="assets/images/UX.jpg" alt="holding-img" class="w-full h-full">
+            </div>
+            <h1 class="py-4">Qt GUI Upgrade for the Voting System</h1>
+            <p class="text-[#272727]">See how I am about to tranlate a basic terminal-based voting system into having a GUI</p> 
+
+            <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
+          </div>  
         </div>
+      </section>
 
-        <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
-          <div class="h-[45vh]">
-            <img src="assets/images/UX.jpg" alt="holding-img" class="w-full h-full">
-          </div>
-          <h1 class="py-4">Qt GUI Upgrade for the Voting System</h1>
-          <p class="text-[#272727]">See how I am about to tranlate a basic terminal-based voting system into having a GUI</p> 
+      <section id="passions" class="flex justify-center">
+        <button class="mt-24 bg-[#9a7d0a] hover:bg-[#9a7d0aa8] px-14 py-2 text-[20px] text-white font-serif">All Blogs</button>
+      </section>
 
-          <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
-        </div>  
-      </div>
-    </section>
+      <section id="about" class="flex h-auto item-center mt-20">
+        <div class="h-[85vh] w-[50%] pl-6">
+          <img src="assets/images/pic4.JPEG" alt="my-pic" class="h-full w-full">
+        </div>
+        <div class="h-[75vh] w-[45%] bg-[#9a7d0aa8] justify-center mt-8 p-4 py-12">
+          <h1 class="text-[40px] text-[#9a7d0a]">hi!</h1>
+          <p class="font-serif text-[1x] text-[#272727]">
+            I’m a MIS student with a big love for tech, creativity, and making things work. 
+            Since I was a kid, I’ve always been curious about how computers operate — and yeah, hacking caught my attention early on too (NO-NAME loading…). 
+            That curiosity turned into a passion for building stuff, solving problems, and learning non-stop.
+            <br> <br>
+            I’m especially into programming and cybersecurity — I wanna create something big one day, something that’ll hit worldwide. 
+            I see tech not just as a career, but as a tool to connect ideas, business, and people.
+            Outside of the code? You’ll find me shooting hoops, vibing to music, or deep in a late-night code session. 
+            Music keeps me locked in, and basketball clears my head when bugs start acting wild.
+            <br> <br>
+            I don’t have a perfect routine, but it works. 
+            I code daily, study when it matters, and keep pushing forward. 
+            My motto? If not me, then who? That drive keeps me hungry to grow, learn, and leave a mark in the tech world.          
+          </p>
+        </div>
+      </section>
+  </main>
 </body>
 </html>
