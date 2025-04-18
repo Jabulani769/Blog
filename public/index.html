@@ -4,21 +4,25 @@
   <title>Jabu's Blog</title>
   <link rel="icon" type="image/jpg" href="assets/images/pic3.jpg">
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-  <link href="./dist/output.css" rel="stylesheet">
+  <link href="./output.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Playwrite+MX+Guides&family=Playwrite+RO:wght@100..400&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="fixed w-full top-0 bg-[#FAEBD7]">
     <section id="mainConatainer-h" class="flex justify-between items-center py-8">
-      <div> <!--sub containers-->
-          <h1 class="pl-6">JABU'S <span class="text-[#9a7d0a]">Blog</span></h1>
+      <div class="logo-font"> <!--sub containers-->
+          <a href="#body"><h1 class="pl-6">JABU'S <span class="text-[#9a7d0a]">Blog</span></h1></a>
       </div>
 
       <div> <!--sub containers-->
           <nav class="flex w-[100%] gap-10">
             <a href="#welcome"><li class="list-none cursor-pointer hover:shadow-link-shadow">Home</li></a>
-            <a href="#"><li class="list-none cursor-pointer hover:shadow-link-shadow">Blogs</li></a>
-            <a href="#"><li class="list-none cursor-pointer hover:shadow-link-shadow">About</li></a>
-            <a href="#"><li class="list-none cursor-pointer hover:shadow-link-shadow">Contact</li></a>
+            <a href="#my-blogs"><li class="list-none cursor-pointer hover:shadow-link-shadow">Blogs</li></a>
+            <a href="#about"><li class="list-none cursor-pointer hover:shadow-link-shadow">About</li></a>
+            <a href="#connect"><li class="list-none cursor-pointer hover:shadow-link-shadow">Contact</li></a>
           </nav>
       </div>
 
@@ -84,7 +88,7 @@
       </section>
 
       <section id="passions" class="flex justify-center">
-        <button class="mt-24 bg-[#9a7d0a] hover:bg-[#9a7d0aa8] px-14 py-2 text-[20px] text-white font-serif">All Blogs</button>
+        <button class="mt-24 bg-[#9a7d0a] hover:bg-[#9a7d0aa8] transition-all duration-200 px-14 py-2 text-[20px] text-white font-serif">All Blogs</button>
       </section>
 
       <section id="about" class="flex h-auto item-center mt-20">
@@ -107,6 +111,28 @@
             I code daily, study when it matters, and keep pushing forward. 
             My motto? If not me, then who? That drive keeps me hungry to grow, learn, and leave a mark in the tech world.          
           </p>
+        </div>
+      </section>
+
+      <!-- contact section -->
+      <section id="connect" class="connect flex justify-between mt-20 p-4 bg-[url('assets/images/wave.svg')] mb-10">
+        <div class="connecth1 w-[40%] p-2">
+          <h1 class="font-semibold text-[30px]">Lets learn, explore and thrive together!</h1>
+          <p class="text-justify">
+            Got a question? A cool idea? Or maybe you just wanna say hey? 
+            Slide into my inbox — I’m always down for a good chat. 
+            This space is all about vibing, learning new stuff, and just growing together in the most laid-back way. 
+            No pressure, no formality — just real talk and good energy. Don’t be a stranger.
+          </p>
+        </div>
+
+        <div class="w-[40%]">
+          <form action="https://formspree.io/f/xldjopqw" method="POST">
+            <input type="email" name="Email" placeholder="Email" class="w-full h-10 rounded-[4px] px-2 border-none outline-[#9a7d0a]" required><br><br>
+            <textarea name="Message" placeholder="Message" class="w-full h-24 rounded-[4px] px-2 py-2 border-none outline-[#9a7d0a]" required></textarea> <br> <br>
+
+            <button type="submit" class="bg-[#9a7d0a] hover:bg-[#9a7d0aa8] transition-all duration-200 outline-none outline-[#9a7d0a] hover:outline-[#8b5e3c] text-white py-2 w-full">Send</button>
+          </form>
         </div>
       </section>
   </main>

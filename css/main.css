@@ -8,3 +8,17 @@ html {
 body {
   background-color: #FAEBD7;
 }
+.logo-font{
+  font-family: "Playwrite MX Guides";
+}
+/* .connect{
+  background: url('assests/images/footerbg.png');
+  background-size: cover;
+  background-repeat: nop-repeat;
+} */
+.connecth1 h1{
+  font-family: "Dancing Script";
+}
+.connecth1 p{
+  font-family: "Playwrite RO";
+}
