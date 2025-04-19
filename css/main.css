@@ -11,14 +11,13 @@ body {
 .logo-font{
   font-family: "Playwrite MX Guides";
 }
-/* .connect{
-  background: url('assests/images/footerbg.png');
-  background-size: cover;
-  background-repeat: nop-repeat;
-} */
 .connecth1 h1{
   font-family: "Dancing Script";
 }
 .connecth1 p{
   font-family: "Playwrite RO";
+}
+/* blog page */
+.title h1, .context h1{
+  font-family: "Rubik Marker Hatch";
 }

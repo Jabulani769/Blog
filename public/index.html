@@ -3,7 +3,6 @@
 <head>
   <title>Jabu's Blog</title>
   <link rel="icon" type="image/jpg" href="assets/images/pic3.jpg">
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
   <link href="./output.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,21 +50,23 @@
         </div>
       </section>
 
-      <section id="my-blogs">
+      <section id="my-blogs" class="bg-[#dfc8ab] pb-10">
         <h1 class="text-center text-[40px] my-20">My featured <span class="text-[#9a7d0a]">Blogs</span></h1>
-        <div id="mainContainer" class="font-serif text-[20px] border flex justify-center gap-4">
+        <div id="mainContainer" class="font-serif text-[20px] flex justify-center gap-4">
           <!-- the featured blogs containers -->
-          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+           <!-- box-1 -->
+          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border hover:shadow-box-shadow transition-all duration-200">
             <div class="h-[45vh]">
-            <img src="assets/images/voting.jpg" alt="holding-img" class="w-full h-full">
+            <a href="blogs/voting-system.html"><img src="assets/images/voting.jpg" alt="holding-img" class="w-full h-full"></a>
             </div>
             <h1 class="py-4">Building a Voting System in C</h1>
             <p class="text-[#272727]">Learn how I created a simple but yet powerful terminal-based voting system.</p>
 
-            <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
+            <a href="blogs/voting-system.html" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
           </div>
 
-          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+          <!-- box-2 -->
+          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border hover:shadow-box-shadow transition-all duration-200">
             <div class="h-[45vh]">
               <img src="assets/images/community.jpeg" alt="holding-img" class="w-full h-full">
             </div>
@@ -75,7 +76,8 @@
             <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
           </div>
 
-          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border">
+          <!-- box-3 -->
+          <div id="featured-blogs" class="w-[30%] h-[75vh] text-center border-[#9a7d0aa8] border hover:shadow-box-shadow transition-all duration-200">
             <div class="h-[45vh]">
               <img src="assets/images/UX.jpg" alt="holding-img" class="w-full h-full">
             </div>
@@ -85,10 +87,11 @@
             <a href="#" class="text-[#9a7d0a] hover:text-[#9a7d0aa8]">READ MORE</a>
           </div>  
         </div>
-      </section>
 
-      <section id="passions" class="flex justify-center">
-        <button class="mt-24 bg-[#9a7d0a] hover:bg-[#9a7d0aa8] transition-all duration-200 px-14 py-2 text-[20px] text-white font-serif">All Blogs</button>
+        <section id="passions" class="flex justify-center">
+          <button class="mt-24 bg-[#9a7d0a] hover:bg-[#9a7d0aa8] transition-all duration-200 px-14 py-2 text-[20px] text-white font-serif">All Blogs</button>
+        </section>
+  
       </section>
 
       <section id="about" class="flex h-auto item-center mt-20">
@@ -115,7 +118,7 @@
       </section>
 
       <!-- contact section -->
-      <section id="connect" class="connect flex justify-between mt-20 p-4 bg-[url('assets/images/wave.svg')] mb-10">
+      <section id="connect" class="connect flex justify-between mt-20 p-4 bg-[#dfc8ab]">
         <div class="connecth1 w-[40%] p-2">
           <h1 class="font-semibold text-[30px]">Lets learn, explore and thrive together!</h1>
           <p class="text-justify">
@@ -128,8 +131,8 @@
 
         <div class="w-[40%]">
           <form action="https://formspree.io/f/xldjopqw" method="POST">
-            <input type="email" name="Email" placeholder="Email" class="w-full h-10 rounded-[4px] px-2 border-none outline-[#9a7d0a]" required><br><br>
-            <textarea name="Message" placeholder="Message" class="w-full h-24 rounded-[4px] px-2 py-2 border-none outline-[#9a7d0a]" required></textarea> <br> <br>
+            <input type="email" name="Email" placeholder="Email" class="w-full h-10 rounded-[4px] px-2 border outline-[#9a7d0a] border-[#9a7d0a] bg-[#dfc8ab]" required><br><br>
+            <textarea name="Message" placeholder="Message" class="w-full h-24 rounded-[4px] px-2 py-2 border outline-[#9a7d0a] border-[#9a7d0a] bg-[#dfc8ab]" required></textarea> <br> <br>
 
             <button type="submit" class="bg-[#9a7d0a] hover:bg-[#9a7d0aa8] transition-all duration-200 outline-none outline-[#9a7d0a] hover:outline-[#8b5e3c] text-white py-2 w-full">Send</button>
           </form>

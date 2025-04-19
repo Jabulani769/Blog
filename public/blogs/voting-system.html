@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../output.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Mountains+of+Christmas:wght@400;700&family=Playwrite+MX+Guides&family=Playwrite+RO:wght@100..400&family=Rubik+Marker+Hatch&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="fixed w-full top-0 bg-[#FAEBD7]">
+        <section id="mainConatainer-h" class="py-6 flex justify-between items-center">
+          <div class="logo-font flex"> <!--sub containers-->
+              <a href="../index.html"><h1 class="ml-6">JABU'S <span class="text-[#9a7d0a]">Blog</span></h1></a>
+          </div>
+          <div class="text-[20px] h-[40px] px-6 font-light-500">
+            <h1 class="font-mono">Bulding a Terminal-based Voting System in C</h1>
+          </div>
+        </section>
+      </header>
+
+    <main class="h-auto mt-20 flex justify-between">
+        <section class="fixed ml-10 w-[20%] h-auto bg-[#FAEBD7]">
+            <div class="context w-full h-auto flex flex-col">
+                <h1 class="text-[20px] text-left font-semibold">Table of Contents</h1>
+                <ul class="list-disc w-[80%]">
+                    <li class="list-none"><a href="#introduction" class="font-mono hover:text-[#9a7d0a] hover:underline">Introduction</a></li>
+                    <li class="list-none"><a href="#why-c" class="font-mono hover:text-[#9a7d0a] hover:underline">Why C ?</a></li>
+                    <li class="list-none"><a href="#behind-scene" class="font-mono hover:text-[#9a7d0a] hover:underline">Behind the scene</a></li>
+                    <li class="list-none"><a href="#security" class="font-mono hover:text-[#9a7d0a] hover:underline">Security & Admin access</a></li>
+                    <li class="list-none"><a href="#whats-next" class="font-mono hover:text-[#9a7d0a] hover:underline">Whats next?</a></li>
+                    <li class="list-none"><a href="#final-thoughts" class="font-mono hover:text-[#9a7d0a] hover:underline">Final thoughts</a></li>
+                </ul>
+            </div>
+        </section>
+        <section class="title w-[70%] h-auto text-justify p-10 ml-[20%]">
+            <h1 class="text-center text-[30px] font-semibold">How I Accidentally Built a Voting System in C</h1>
+            <div class="w-full h-[80vh] m-auto">
+                <div class="w-[40%] h-24 flex my-4 p-2 items-center">
+                    <div class="w-[90px] h-[90px] rounded-full">
+                        <img src="../assets/images/pic2.jpg" alt="my-pic" class="w-full h-full rounded-full">
+                    </div>
+                    <div class="ml-2">
+                        <p>Jabulani Kapherachoka</p>
+                        <p>10 April, 2025</p>
+                    </div>
+                </div>
+                <img src="../assets/images/voting.jpg" alt="hand-casting-vote" class="w-full h-[60vh]">
+            </div>
+            <!-- text box -->
+             <div>
+                <p id="introduction">
+                    So here is the story: It was that time of the semester when we were required to present our project ideas. 
+                    I had absolutely <i>no clue</i> what i was going to build — brain blank, zero inspiration. 
+                    And then ... When it was time to announce the project idea i just blurted out, <span class="text-[#9a7d0a]">"I'll build a voting system".</span>    
+                    <i>Hell nah.</i> Did I just say that? But hey, thats how my very first voting system project was born — unexpectedly we might say LOL!
+                </p> <br>
+
+                <h1 id="why-c" class="text-[24px]">Why C for the system?</h1>
+                <p>
+                    I know some programmers out there had this question. 
+                    At the time, we were learning C programming language, so naturally, I was just supposed to do so. <i>(But yeah, I plan on recreating it in C++ soon).</i>
+                </p> <br>
+
+                <h1 class="text-[24px]">What it does</h1>
+                <p>
+                    The system has two main users: the <span class="text-[#9a7d0a]">admin</span> and the <span class="text-[#9a7d0a]">voter</span>. 
+                    Here are the key functions of the system: <br> <span class="text-[#9a7d0a]">1. Admin first :</span>
+                </p>
+                        <details>
+                            <summary class="cursor-pointer">Regester candidates to the system.</summary>
+                            <div class="bg-[#9a7d0a63]">
+                                <p>To register candiate the system takes input 3 inputs</p> 
+                                <ul class="list-disc pl-10">
+                                    <li>Candidate Full name</li>
+                                    <li>Candidate ID number</li>
+                                    <li>Candidate Position</li>
+                                </ul>
+                            </div>
+                        </details>
+
+                        <details>
+                            <summary class="cursor-pointer">Regester voter to the system.</summary>
+                            <div class="bg-[#9a7d0a63]">
+                                <p>For voter registration voter is asked to provide: </p>
+                                <ul class="list-disc pl-10">
+                                    <li>Voters Full name</li>
+                                    <li>Voters ID number</li>
+                                </ul>
+                            </div>                        
+                        </details>
+                        
+                        <details>
+                            <summary class="cursor-pointer">View the results of the voting.</summary>
+                            <div class="bg-[#9a7d0a63]">
+                                <p>
+                                    On this part I really hard to dig deep. 
+                                    I had no idea on how i was going to show the results on the terminal.
+                                    So i googled way how i can present info on the terminal, and i came across ASCII graphics.
+                                </p>
+                            </div>
+                        </details>
+                <p class="mt-4"><span class="text-[#9a7d0a]">2. Voter :</span></p>
+                <p>
+                    The voters platform is as simple as entering your voterID, waiting for the system to verify if your registred into the system.
+                    It checks the regFiles for the matching ID.
+                </p><br>
+             
+                <h1 id="behind-scene" class="text-[24px]">Behind the scenes</h1>
+                <p>
+                    I started by sketching out the flow diagrams to plan every stage of the voting process. 
+                    There are two main portals in the system: <b class="text-[#9a7d0a]">Voter Portal</b> and the <b class="text-[#9a7d0a]">Admin Portal</b>, where one needs a secret code to enter the admin portal.
+                </p>
+                <p>
+                    All the data — <i class="text-[#9a7d0a]">candidates, voters, votes and used voterID's</i> are stored in <i class="text-[#9a7d0a]">.txt files</i>. 
+                    I wanted keep things simple, light and offline.
+                </p><br>
+                <p>
+                    <b>One unique part:</b> While building the voting system, one important feature I needed was to group candidates based on the position they’re contesting for.
+                    Sounds simple, right? But since candidates were being registered one by one into a flat file (without any structure like a database), 
+                    I had to figure out a way to dynamically detect which positions existed and group candidates accordingly — all with just arrays and logic in C.
+                </p><br>
+                <p>
+                    So I created a mechanism to scan through all registered candidates, identify each unique position, and store it in a list. 
+                    That way, when it came time to display candidates during the voting phase, 
+                    I could easily show all candidates under the same position grouped together.
+                </p>
+
+                <img src="../assets/images/code-snip.png" alt="code-snip" class="w-full my-2">
+
+                <p>
+                    And for the results? I built a basic <b>ASCII graph</b> using loops and <b>#</b> symbols to visualise vote counts per candidate.
+                    Here is a peek of the code.
+                </p>
+
+                <img src="../assets/images/code-snip2.png" alt="code-snip"><br>
+
+                <h1 id="security" class="text-[24px]">Security & Admin Access</h1>
+                <p>
+                    Security was a big deal for me. Here's how it works:
+                </p>
+                <p>
+                    - Users can only vote once. The system tracks their ID and marks it as used after voting.
+                    To access admin features, a secret code must be entered.
+                    The admin can view the results and manage candidates and voters, but they <b>can't edit data</b> (to prevent internal corruption).
+                    Exiting admin mode also requires another code, just to make it more security spice.
+                </p><br>
+                
+                <h1 class="text-[24px]">Growth from the Grind</h1>
+                <p>
+                    Challenges? So many, but here are a few noticable ones :
+                </p>
+                <p>
+                    Grouping candidates by position — Building a vote counter that visually shows results 
+                    — Creating a secure, two layer access system — And oh debugging, <b>LOTS OF IT</b>.
+                </p><br>
+                <p>
+                    I had to read through so much C documentations just to get certain things right.
+                    But in the process, I improved drastically in file handling, loops, and especially string manipulation using the <span class="font-mono font-bold"><mark class="bg-gray-400">#include &lt;string.h&gt;</mark></span> library.
+                    Overall working on this project taught me — How to organize C programs into <b>modular functions</b>. 
+                    The power of <b>structures</b> and <b>advanced loops</b>. Most importantly, how to think like a <b>developer</b> not just a coder.  
+                </p><br>
+
+                <h1 id="whats-next" class="text-[24px]">What's Next?</h1>
+                <p>
+                    I might have taken a brake from it for a moment, but am not done with it yet. 
+                    I'm planning to: 
+                    <ul>
+                        <li>— add a database support</li>
+                        <li>— Introduce aunthentication systems</li> 
+                        <li>— most importantly Build a GUI version</li>
+                    </ul>
+                </p>
+                <p>
+                    I was also thinking of open-sourcing it, so that other devs and students can learn from it, improve it or even build their own.
+                </p><br>
+
+                <h1 id="final-thoughts" class="text-[24px]">Final Thoughts</h1>
+                <p>
+                    This whole thing started as an slip of the tongue. 
+                    But I ended up learning so much, not just about C programming, but about problem-solving, security 
+                    and building something that actually works.
+                </p><br>
+                <p>
+                    So yeah... Sometimes the best projects start with I might say a: <i>"Wait... did I just say that?</i>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-[80%] h-auto mt-10 p-2 m-auto">
+        <form action="https://formspree.io/f/xldjopqw" method="POST">
+            <textarea name="Message" id="textarea" placeholder="Type comment" class="w-[100%] h-[25vh] mt-4 p-2 border outline-none border-[#9a7d0a]"></textarea> <br>
+            <input type="text" name="Name" id="name" placeholder="Name" class="w-[49.8%] h-[40px] mt-4 p-2 border outline-none border-[#9a7d0a]">
+            <input type="email" name="Email" id="email" placeholder="Email" class="w-[49.8%] h-[40px] mt-4 p-2 border outline-none border-[#9a7d0a]"><br><br>
+
+            <button class=" bg-[#9a7d0a] hover:bg-[#9a7d0aa8] transition-all duration-200 px-14 py-2 text-[20px] text-white font-serif">Send Comment</button>
+        </form>
+    </footer>
+</body>
+</html>

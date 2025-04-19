@@ -1,15 +1,15 @@
 {
-  "name": "blog",
+  "name": "jabulani-blog",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tailwindcss -i ./css/main.css -o ./public/output.css --minify",
-    "watch": "tailwindcss -i ./css/main.css -o ./public/output.css --watch"
+    "build": "npx tailwindcss -i ./css/main.css -o ./public/output.css --minify",
+    "watch": "npx tailwindcss -i ./css/main.css -o ./public/output.css --watch"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jabulani Kapherachoka",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^10.4.21",

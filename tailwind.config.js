@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./public/*.html"
+    "./public/**/*.html"
   ],
   theme: {
     screens: {
@@ -13,6 +13,7 @@ module.exports = {
     extend: {
       boxShadow: {
         'link-shadow': '0 1px 0 #000000',
+        'box-shadow': '0 0 10px 4px #9a7d0abb',
       },
     },
   },
