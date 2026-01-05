@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+const { title = "J-Blog" } = Astro.props;
 ---
 
 <!doctype html>
@@ -14,7 +15,7 @@ import "../styles/global.css";
     />
 
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <title>{title}</title>
   </head>
   <body>
     <slot />
