@@ -36,7 +36,6 @@ const { id, triggerText } = Astro.props;
 </div>
 
 <script>
-  // This function runs every time the page loads/transitions
   const setupModals = () => {
     const triggers = document.querySelectorAll("[data-modal-target]");
 
@@ -46,7 +45,6 @@ const { id, triggerText } = Astro.props;
         const modalId = trigger.getAttribute("data-modal-target");
         const modal = document.getElementById(modalId!);
         if (modal) {
-          // We use inline styles to override any Tailwind conflicts
           modal.style.display = "flex";
           document.body.style.overflow = "hidden";
         }
@@ -64,7 +62,6 @@ const { id, triggerText } = Astro.props;
       });
     });
 
-    // Close on clicking the dark overlay outside the box
     window.addEventListener("click", (e) => {
       if ((e.target as HTMLElement).classList.contains("fixed")) {
         (e.target as HTMLElement).style.display = "none";
@@ -73,8 +70,6 @@ const { id, triggerText } = Astro.props;
     });
   };
 
-  // Run on initial load
   setupModals();
-  // If you use Astro View Transitions, run it on every swap
   document.addEventListener("astro:after-swap", setupModals);
 </script>

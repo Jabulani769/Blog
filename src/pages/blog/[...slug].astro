@@ -1,0 +1,116 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Dir from "../../components/Dir.astro";
+import { getCollection, getEntry } from "astro:content";
+
+// Get the slug from the URL (Astro handles this automatically)
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
+
+// Fetch the specific post
+const { slug } = Astro.params;
+const post = await getEntry("blog", slug);
+
+if (!post) {
+  return Astro.redirect("/404");
+}
+
+const { Content } = await post.render();
+const { title, description, pubDate, image } = post.data;
+---
+
+<Layout title={`${title} — J-Blog`}>
+  <Header />
+
+  <main class="flex-1 mt-20">
+    <div
+      class="w-[90%] md:w-[70%] m-auto p-4 border-2 border-black bg-gray-200 text-black rounded-md shadow-lg"
+    >
+      <!-- Terminal-style header for the post -->
+      <Dir dir={`jabublog-[~]/blog/${slug}`} />
+
+      <article class="mt-8 font-sans text-black">
+        <header class="mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">{title}</h1>
+
+          <div class="flex items-center gap-4 text-sm text-gray-600">
+            <time>
+              {
+                pubDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              }
+            </time>
+            <span class="text-cyan-600 font-mono">jabublog@root</span>
+          </div>
+
+          {
+            description && (
+              <p class="mt-4 text-lg text-gray-700 italic">{description}</p>
+            )
+          }
+        </header>
+
+        {
+          image && (
+            <img
+              src={image}
+              alt={title}
+              class="w-full rounded-lg shadow-md my-8 object-cover max-h-96"
+            />
+          )
+        }
+
+        <div class="prose prose-lg max-w-none text-black">
+          <!-- Rendered Markdown content -->
+          <Content />
+        </div>
+
+        <footer class="mt-12 pt-8 border-t-2 border-gray-400">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-400 font-mono"
+          >
+            ← cd ..
+          </a>
+        </footer>
+      </article>
+    </div>
+  </main>
+</Layout>
+<style>
+  @reference "../../styles/global.css";
+
+  .prose :global(h2) {
+    @apply text-2xl font-bold mt-12 mb-4 border-l-4 border-cyan-600 pl-4;
+  }
+  .prose :global(h3) {
+    @apply text-xl font-bold mt-8 mb-3;
+  }
+  .prose :global(p) {
+    @apply mb-6 leading-relaxed;
+  }
+  .prose :global(code) {
+    @apply bg-gray-800 text-cyan-300 px-2 py-1 rounded font-mono text-sm;
+  }
+  .prose :global(pre) {
+    @apply bg-black text-cyan-400 p-4 rounded-lg overflow-x-auto my-8 font-mono text-sm;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    @apply mb-6 pl-8;
+  }
+  .prose :global(li) {
+    @apply mb-2;
+  }
+  .prose :global(a) {
+    @apply text-cyan-600 hover:underline;
+  }
+</style>

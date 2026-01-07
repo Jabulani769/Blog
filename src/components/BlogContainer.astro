@@ -1,49 +1,290 @@
 ---
+import Dir from "./Dir.astro";
+import { getCollection } from "astro:content";
 
+const allPosts = await getCollection("blog", ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+const posts = allPosts.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+// NEW: Get rendered content for terminal preview
+const serializedPosts = posts.map((post) => ({
+  slug: post.slug,
+  title: post.data.title,
+  description: post.data.description || "No description.",
+  pubDate: post.data.pubDate.toISOString().split("T")[0],
+  image: post.data.image || null,
+}));
 ---
 
-<div class="mt-20"></div>
-<section
-  class="w-[90%] m-auto h-auto p-2 md:w-[80%] rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4"
+<div
+  class="w-[90%] md:w-[70%] m-auto p-4 border-2 border-black bg-gray-200 text-black rounded-md shadow-lg relative"
+  data-posts={JSON.stringify(serializedPosts)}
 >
-  <!-- blog summaries -->
-  <!-- blog 1 -->
-  <div class="border-2 h-75">
-    <div class="bg-gray-500 h-48 w-full">
-      <!-- image -->
-    </div>
-    <div class="w-full bg-amber-200 h-26">
-      <!-- blog content summary -->
+  <!-- theme-->
+  <button
+    id="mode-toggle"
+    class="absolute top-4 right-4 px-4 py-1 bg-black text-cyan-400 font-mono text-sm rounded border border-cyan-600 hover:bg-cyan-900 transition z-10"
+  >
+    GUI Mode
+  </button>
+
+  <!-- terminal -->
+  <div
+    id="terminal-mode"
+    class="font-mono text-cyan-400 bg-black p-6 rounded-md min-h-96"
+  >
+    <div id="output" class="mb-4 space-y-1 text-sm"></div>
+    <div class="flex items-center">
+      <Dir dir="jabublog@root:~#" />
+      <input
+        id="terminal-input"
+        type="text"
+        class="bg-transparent outline-none flex-1 ml-2 text-cyan-400 caret-cyan-400"
+        autocomplete="off"
+        autofocus
+      />
+      <span
+        id="cursor"
+        class="inline-block w-2 h-5 bg-cyan-400 ml-1 animate-blink"></span>
     </div>
   </div>
 
-  <!-- blog 2 -->
-  <div class="border-2 h-75">
-    <div class="bg-gray-500 h-48 w-full">
-      <!-- image -->
-    </div>
-    <div class="w-full bg-amber-200 h-26">
-      <!-- blog content summary -->
-    </div>
+  <!-- gui -->
+  <div id="gui-mode" class="hidden">
+    <Dir dir="jabublog-[~]" class="mb-6" />
+    <section
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {
+        posts.map((post) => (
+          <article class="rounded-lg shadow-md overflow-hidden flex sm:block bg-white">
+            <div class="w-[40%] sm:w-full h-48 sm:h-64 bg-gray-800">
+              {post.data.image ? (
+                <img
+                  src={post.data.image}
+                  alt={post.data.title}
+                  class="w-full h-full object-cover"
+                />
+              ) : (
+                <div class="w-full h-full bg-gray-700 flex items-center justify-center text-gray-500 text-sm">
+                  No image
+                </div>
+              )}
+            </div>
+            <div class="w-[60%] sm:w-full p-4 bg-amber-100 flex flex-col justify-between">
+              <div>
+                <h3 class="font-bold text-lg mb-2">{post.data.title}</h3>
+                {post.data.description && (
+                  <p class="text-sm text-gray-700 mb-3">
+                    {post.data.description}
+                  </p>
+                )}
+                <time class="text-xs text-gray-500">
+                  {post.data.pubDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              </div>
+              <a
+                href={`/blog/${post.slug}`}
+                class="text-cyan-600 hover:underline text-sm mt-4 inline-block"
+              >
+                cat {post.slug} →
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </section>
   </div>
+</div>
 
-  <!-- blog 3 -->
-  <div class="border-2 h-75">
-    <div class="bg-gray-500 h-48 w-full">
-      <!-- image -->
-    </div>
-    <div class="w-full bg-amber-200 h-26">
-      <!-- blog content summary -->
-    </div>
-  </div>
+<script>
+  // dom elements
+  const container = document.querySelector("[data-posts]");
+  const posts = container
+    ? JSON.parse((container as HTMLElement).dataset.posts || "[]")
+    : [];
 
-  <!-- blog 4 -->
-  <div class="border-2 h-75">
-    <div class="bg-gray-500 h-48 w-full">
-      <!-- image -->
-    </div>
-    <div class="w-full bg-amber-200 h-26">
-      <!-- blog content summary -->
-    </div>
-  </div>
-</section>
+  const output = document.getElementById("output");
+  const input = document.getElementById(
+    "terminal-input"
+  ) as HTMLInputElement | null;
+  const terminalMode = document.getElementById("terminal-mode");
+  const guiMode = document.getElementById("gui-mode");
+  const toggleBtn = document.getElementById(
+    "mode-toggle"
+  ) as HTMLButtonElement | null;
+
+  // === Command History ===
+  const history = [];
+  let historyIndex = -1;
+
+  // command interface
+  interface Command {
+    (args?: string[]): string;
+  }
+
+  const commands: Record<string, Command> = {
+    help: () =>
+      `
+Available commands:
+  ls          - List all blog posts
+  cat <slug>  - Preview a post summary
+  open <slug> - Open full post in graphical mode
+  clear       - Clear the terminal
+  gui         - Switch to graphical mode
+  help        - Show this help
+    `.trim(),
+
+    ls: () =>
+      posts.map((p) => `${p.slug.padEnd(25)} (${p.pubDate})`).join("\n"),
+
+    cat: (args: string[] = []) => {
+      if (!args[0]) return "Usage: cat <post-slug>";
+
+      const post = posts.find((p) => p.slug === args[0]);
+      if (!post) {
+        return `cat: ${args[0]}: No such file or directory\nHint: Use 'ls' to see available posts.`;
+      }
+
+      let output = `
+<span class="text-cyan-300 font-bold text-lg">${post.title}</span>
+<span class="text-gray-500 text-sm">${post.pubDate} • jabublog@root</span>
+
+`;
+
+      if (post.image) {
+        output += `<span class="text-yellow-300">[Image: ${post.image}]</span>\n\n`;
+      }
+
+      if (post.description) {
+        output += `${post.description}\n\n`;
+      }
+
+      output += `
+<span class="text-green-400">>>> Full post available in graphical mode</span>
+<span class="text-yellow-300">Tip: Type "open ${post.slug}" to view the complete post →</span>
+
+<span class="text-gray-500">~ preview of ${args[0]} ~</span>
+      `.trim();
+
+      return output;
+    },
+
+    open: (args: string[] = []) => {
+      if (!args[0]) return "Usage: open <post-slug>";
+
+      const post = posts.find((p) => p.slug === args[0]);
+      if (!post) return `open: No such file "${args[0]}"`;
+
+      window.location.href = `/blog/${args[0]}`;
+      return `Opening "${post.title}" in graphical viewer...`;
+    },
+
+    clear: () => {
+      if (output) output.innerHTML = "";
+      return "";
+    },
+
+    gui: () => {
+      toggleMode();
+      return "Entering graphical interface...";
+    },
+  };
+
+  // thandizo
+  function appendLine(text: string, isCommand = false) {
+    if (!output) return;
+    const line = document.createElement("div");
+    line.innerHTML = isCommand
+      ? `<span class="text-gray-500">jabublog@root:~#</span> ${text}`
+      : text;
+    output.appendChild(line);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  // m-switching
+  function toggleMode() {
+    if (!terminalMode || !guiMode || !toggleBtn || !input) return;
+
+    if (terminalMode.classList.contains("hidden")) {
+      terminalMode.classList.remove("hidden");
+      guiMode.classList.add("hidden");
+      toggleBtn.textContent = "GUI Mode";
+      input.focus();
+    } else {
+      terminalMode.classList.add("hidden");
+      guiMode.classList.remove("hidden");
+      toggleBtn.textContent = "Terminal Mode";
+    }
+  }
+
+  toggleBtn?.addEventListener("click", toggleMode);
+
+  if (input) {
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const cmdLine = input.value.trim();
+
+        if (cmdLine) {
+          // no duplicate entries pama commands
+          if (history.length === 0 || history[history.length - 1] !== cmdLine) {
+            history.push(cmdLine);
+          }
+          historyIndex = history.length;
+
+          appendLine(cmdLine, true);
+          const [cmd, ...args] = cmdLine.split(" ");
+          const handler = commands[cmd];
+
+          if (handler) {
+            const result = handler(args);
+            if (result) appendLine(result);
+          } else {
+            appendLine(
+              `<span class="text-red-400">bash: ${cmd}: command not found</span>`
+            );
+          }
+        }
+
+        input.value = "";
+      }
+
+      // arrow key nav hist
+      else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          input.value = history[historyIndex];
+        }
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (historyIndex < history.length - 1) {
+          historyIndex++;
+          input.value = history[historyIndex];
+        } else {
+          // Go to empty new line
+          historyIndex = history.length;
+          input.value = "";
+        }
+      }
+    });
+
+    terminalMode?.addEventListener("click", () => input.focus());
+  }
+
+  appendLine(
+    `
+<span class="text-cyan-300">jabublog terminal v0.1</span>
+<span class="text-green-400">${posts.length} post${posts.length === 1 ? "" : "s"} loaded.</span>
+Type <span class="text-yellow-400">help</span> to begin. Use ↑/↓ arrows for command history.
+  `.trim()
+  );
+</script>
