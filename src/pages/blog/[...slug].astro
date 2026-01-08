@@ -24,13 +24,11 @@ const { Content } = await post.render();
 const { title, description, pubDate, image } = post.data;
 ---
 
-<Layout title={`${title} — J-Blog`}>
+<Layout title={`${title}`}>
   <Header />
 
   <main class="flex-1 mt-20">
-    <div
-      class="w-[90%] md:w-[70%] m-auto p-4 border-2 border-black bg-gray-200 text-black rounded-md shadow-lg"
-    >
+    <div class="w-[90%] md:w-[70%] m-auto p-4 text-black">
       <!-- Terminal-style header for the post -->
       <Dir dir={`jabublog-[~]/blog/${slug}`} />
 
@@ -73,7 +71,7 @@ const { title, description, pubDate, image } = post.data;
           <Content />
         </div>
 
-        <footer class="mt-12 pt-8 border-t-2 border-gray-400">
+        <footer class="mt-2 pt-8 border-t-2 border-gray-400">
           <a
             href="/"
             class="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-400 font-mono"
