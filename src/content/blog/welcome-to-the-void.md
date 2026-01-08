@@ -1,7 +1,7 @@
 ---
 title: Welcome to the Void
 description: First steps into the digital abyss.
-pubDate: 2026-08-01
+pubDate: 2026-01-08
 image: https://i.pinimg.com/736x/42/8f/e8/428fe85d9f19a350b4c3a92de0c20438.jpg
 ---
 

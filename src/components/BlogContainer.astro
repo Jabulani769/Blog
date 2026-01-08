@@ -20,7 +20,7 @@ const serializedPosts = posts.map((post) => ({
 ---
 
 <div
-  class="w-[90%] md:w-[70%] m-auto p-4 text-black relative"
+  class="w-[98%] md:w-[70%] m-auto text-black relative"
   data-posts={JSON.stringify(serializedPosts)}
 >
   <!-- mode toggle -->
@@ -34,7 +34,7 @@ const serializedPosts = posts.map((post) => ({
   <!-- terminal -->
   <div
     id="terminal-mode"
-    class="font-mono text-cyan-400 bg-black p-6 rounded-md min-h-96"
+    class="font-mono text-cyan-400 bg-black rounded-md min-h-96"
   >
     <div id="output" class="mb-4 space-y-1 text-sm"></div>
     <div class="flex items-center">
@@ -61,7 +61,7 @@ const serializedPosts = posts.map((post) => ({
       {
         posts.map((post) => (
           <article class="rounded-lg shadow-md overflow-hidden flex sm:block bg-white">
-            <div class="w-[40%] sm:w-full h-48 sm:h-64 bg-gray-800">
+            <div class="w-[40%] sm:w-full h-auto sm:h-64 bg-gray-800">
               {post.data.image ? (
                 <img
                   src={post.data.image}
@@ -92,7 +92,7 @@ const serializedPosts = posts.map((post) => ({
               </div>
               <a
                 href={`/blog/${post.slug}`}
-                class="text-cyan-600 hover:underline text-sm mt-4 inline-block"
+                class="text-cyan-600 hover:underline text-sm mt-1 inline-block"
               >
                 cat {post.slug} →
               </a>
