@@ -1,6 +1,9 @@
 ---
 import Dir from "./Dir.astro";
 import { getCollection } from "astro:content";
+import PowerOnScreen from "./PowerOnScreen.astro";
+import Terminal from "./terminal/Terminal.astro";
+import BlogList from "./BlogList.astro";
 
 const allPosts = await getCollection("blog", ({ data }) => {
   return import.meta.env.PROD ? !data.draft : true;
@@ -10,6 +13,7 @@ const posts = allPosts.sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
 
+// Serialize for both terminal commands AND BlogList
 const serializedPosts = posts.map((post) => ({
   slug: post.slug,
   title: post.data.title,
@@ -20,10 +24,10 @@ const serializedPosts = posts.map((post) => ({
 ---
 
 <div
-  class="w-[98%] md:w-[70%] m-auto text-black dark:text-cyan-400 relative transition-colors duration-500"
+  class="w-[98%] md:w-[70%] m-auto relative"
   data-posts={JSON.stringify(serializedPosts)}
 >
-  <!-- mode toggle -->
+  <!-- Mode toggle -->
   <button
     id="mode-toggle"
     class="absolute top-1 right-1 px-4 py-1 bg-black text-cyan-400 font-mono text-sm rounded border border-cyan-600 hover:bg-cyan-900 transition z-50"
@@ -31,364 +35,62 @@ const serializedPosts = posts.map((post) => ({
     GUI Mode
   </button>
 
-  <!-- TERMINAL WITH CRT EFFECT -->
-  <div
-    id="terminal-mode"
-    class="font-mono text-cyan-400 p-2 bg-black rounded-md min-h-96 relative overflow-hidden crt"
-  >
-    <!-- Scanlines & Glow -->
-    <div class="crt-scanlines"></div>
-    <div class="crt-glow"></div>
+  <!-- Power on screen -->
+  <PowerOnScreen />
 
-    <div id="output" class="mb-4 space-y-1 text-sm relative z-10"></div>
-    <div class="flex items-center relative z-10">
-      <Dir dir="jabublog@root:~#" />
-      <input
-        id="terminal-input"
-        type="text"
-        class="bg-transparent outline-none flex-1 ml-2 text-cyan-400 caret-cyan-400"
-        autocomplete="off"
-        autofocus
-      />
-      <span
-        id="cursor"
-        class="inline-block w-2 h-5 bg-cyan-400 ml-1 animate-blink"></span>
-    </div>
+  <!-- TERMINAL (visible by default) -->
+  <div id="terminal-wrapper" class="block">
+    <Terminal />
   </div>
 
-  <!-- GUI MODE -->
-  <div id="gui-mode" class="hidden mt-8">
-    <Dir dir="jabublog-[~]" class="mb-6" />
-    <section
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
-      {
-        posts.map((post) => (
-          <article class="rounded-lg shadow-md overflow-hidden flex sm:block bg-white dark:bg-gray-900 transition-colors duration-300">
-            <div class="w-[40%] sm:w-full h-auto sm:h-64 bg-gray-800">
-              {post.data.image ? (
-                <img
-                  src={post.data.image}
-                  alt={post.data.title}
-                  class="w-full h-full object-cover"
-                />
-              ) : (
-                <div class="w-full h-full bg-gray-700 flex items-center justify-center text-gray-500 text-sm">
-                  No image
-                </div>
-              )}
-            </div>
-            <div class="w-[60%] sm:w-full p-4 bg-amber-100 dark:bg-gray-800 flex flex-col justify-between transition-colors duration-300">
-              <div>
-                <h3 class="font-bold text-lg mb-2">{post.data.title}</h3>
-                {post.data.description && (
-                  <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">
-                    {post.data.description}
-                  </p>
-                )}
-                <time class="text-xs text-gray-500 dark:text-gray-400">
-                  {post.data.pubDate.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </time>
-              </div>
-              <a
-                href={`/blog/${post.slug}`}
-                class="text-cyan-600 hover:underline text-sm mt-1 inline-block"
-              >
-                cat {post.slug} →
-              </a>
-            </div>
-          </article>
-        ))
-      }
-    </section>
+  <!-- GUI MODE (hidden by default) -->
+  <div id="gui-mode" class="hidden">
+    <BlogList posts={serializedPosts} client:load />
   </div>
 </div>
 
-<style>
-  /* CRT Effect */
-  .crt {
-    position: relative;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-  }
-  .crt-scanlines {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
-    background-size: 100% 4px;
-    pointer-events: none;
-    animation: scan 10s linear infinite;
-    z-index: 5;
-  }
-  .crt-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      circle at center,
-      transparent 60%,
-      rgba(0, 255, 255, 0.08) 100%
-    );
-    pointer-events: none;
-    z-index: 5;
-  }
-  @keyframes scan {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(4px);
-    }
-  }
-  @keyframes blink {
-    0%,
-    50% {
-      opacity: 1;
-    }
-    51%,
-    100% {
-      opacity: 0;
-    }
-  }
-  .animate-blink {
-    animation: blink 1s step-end infinite;
-  }
-</style>
-
 <script>
-  // For uptime calculation
-  declare global {
-    interface Window {
-      loadTime: number;
-    }
+  // Global data
+  const container = document.querySelector("[data-posts]");
+  if (container instanceof HTMLElement && container.dataset.posts) {
+    window.blogPosts = JSON.parse(container.dataset.posts);
+  } else {
+    window.blogPosts = [];
   }
   window.loadTime = Date.now();
-  // Types
-  type Post = {
-    slug: string;
-    title: string;
-    description?: string;
-    pubDate: string;
-    image?: string | null;
-  };
-  type CommandFn = (args?: string[]) => string;
 
-  // Posts
-  const container = document.querySelector("[data-posts]");
-  const posts: Post[] = container
-    ? (JSON.parse((container as HTMLElement).dataset.posts || "[]") as Post[])
-    : [];
-
-  // DOM
-  const output = document.getElementById("output");
-  const input = document.getElementById(
-    "terminal-input"
-  ) as HTMLInputElement | null;
-  const terminalMode = document.getElementById("terminal-mode");
-  const guiMode = document.getElementById("gui-mode");
+  // Elements
   const toggleBtn = document.getElementById(
     "mode-toggle"
   ) as HTMLButtonElement | null;
+  const terminalWrapper = document.getElementById("terminal-wrapper");
+  const guiMode = document.getElementById("gui-mode");
 
-  // History
-  const history: string[] = [];
-  let historyIndex = -1;
-
-  // Post slugs ONLY (autocomplete source)
-  const postSlugs = posts.map((p) => p.slug).sort();
-
-  // Commands
-  const commands: Record<string, CommandFn> = {
-    help: () => {
-      const lines = [
-        '<span class="text-cyan-300">Available commands:</span>',
-        "",
-        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">ls</span> List all blog posts',
-        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">cat</span> <slug> Preview a post summary',
-        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">open</span> <slug> Open full post in GUI',
-        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">clear</span> Clear the terminal',
-        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">gui</span> Switch to GUI mode',
-        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">help</span> Show this help message',
-        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">neofetch</span> Show system info',
-        "",
-        ' <br> <span class="text-green-400">Tip:</span> <br> &nbsp;&nbsp; • Tab for autocomplete <br> &nbsp;&nbsp;&nbsp;• ↑/↓ for history',
-      ];
-      return lines.join("\n");
-    },
-    ls: () =>
-      posts.map((p) => `${p.slug.padEnd(35)} (${p.pubDate})`).join("\n"),
-    cat: (args = []) => {
-      if (!args[0]) return "Usage: cat <post-slug>";
-      const post = posts.find((p) => p.slug === args[0]);
-      if (!post)
-        return `cat: ${args[0]}: No such file or directory\nHint: Use 'ls'`;
-      let out = `
-<span class="text-cyan-300 font-bold text-lg">${post.title}</span>
-<span class="text-gray-500 text-sm">${post.pubDate} • jabublog@root</span>
-`;
-      if (post.image)
-        out += `<span class="text-yellow-300">[Image: ${post.image}]</span>\n\n`;
-      if (post.description) out += `${post.description}\n\n`;
-      out += `
-<span class="text-green-400">>>> Full post available in GUI</span>
-<span class="text-yellow-300">Tip: open ${post.slug}</span>
-<span class="text-gray-500">~ preview of ${args[0]} ~</span>
-      `.trim();
-      return out;
-    },
-    open: (args = []) => {
-      if (!args[0]) return "Usage: open <post-slug>";
-      const post = posts.find((p) => p.slug === args[0]);
-      if (!post) return `open: No such file "${args[0]}"`;
-      window.location.href = `/blog/${args[0]}`;
-      return `Opening "${post.title}"...`;
-    },
-    clear: () => {
-      if (output) output.innerHTML = "";
-      return "";
-    },
-    gui: () => {
-      toggleMode();
-      return "Switching to GUI...";
-    },
-    neofetch: () => {
-      const uptimeMinutes = Math.floor((Date.now() - window.loadTime) / 60000);
-      const uptime =
-        uptimeMinutes < 60
-          ? `${uptimeMinutes}m`
-          : `${Math.floor(uptimeMinutes / 60)}h ${uptimeMinutes % 60}m`;
-
-      const asciiArt = `
-<span class="text-cyan-400">     ██╗ █████╗ ██████╗ ██╗   ██╗</span>
-<span class="text-cyan-400">     ██║██╔══██╗██╔══██╗██║   ██║</span>
-<span class="text-cyan-300">     ██║███████║██████╔╝██║   ██║</span>
-<span class="text-cyan-300">██   ██║██╔══██║██╔══██╗██║   ██║</span>
-<span class="text-cyan-400">╚█████╔╝██║  ██║██████╔╝╚██████╔╝</span>
-<span class="text-cyan-400"> ╚════╝ ╚═╝  ╚═╝╚═════╝  ╚═════╝ </span>
-      `.trim();
-
-      const info = `
-<span class="text-cyan-300">jabu@jabublog</span>
-<span class="text-gray-500">────────────────</span>
-<span class="text-yellow-400">OS:</span> jabublog OS (Astro)
-<span class="text-yellow-400">Host:</span> vercel.app
-<span class="text-yellow-400">Uptime:</span> ${uptime}
-<span class="text-yellow-400">Posts:</span> ${posts.length}
-<span class="text-yellow-400">Shell:</span> jabush v0.1
-
-<span class="text-cyan-400">███</span><span class="text-blue-500">███</span><span class="text-magenta-400">███</span><span class="text-red-500">███</span><span class="text-yellow-300">███</span><span class="text-green-400">███</span>
-      `.trim();
-
-      return `
-<div class="flex flex-col md:flex-row gap-10 items-start">
-  <pre class="font-mono text-sm leading-tight">${asciiArt}</pre>
-  <pre class="font-mono text-sm leading-tight">${info}</pre>
-</div>
-      `;
-    },
-  };
-
-  // Helpers
-  function appendLine(text: string, isCommand = false) {
-    if (!output) return;
-    const line = document.createElement("div");
-    line.innerHTML = isCommand
-      ? `<span class="text-gray-500">jabublog@root:~#</span> ${text}`
-      : text;
-    output.appendChild(line);
-    output.scrollTop = output.scrollHeight;
+  // Shared toggle function
+  function switchToGUI() {
+    if (!terminalWrapper || !guiMode || !toggleBtn) return;
+    terminalWrapper.classList.add("hidden");
+    guiMode.classList.remove("hidden");
+    toggleBtn.textContent = "Terminal Mode";
   }
 
-  // AUTOCOMPLETE (POST SLUGS ONLY)
-  function autocomplete() {
-    if (!input) return;
-    const value = input.value;
-    const cursor = input.selectionStart ?? value.length;
-    const beforeCursor = value.slice(0, cursor);
-    if (!beforeCursor.includes(" ")) return;
-    const parts = beforeCursor.split(" ");
-    if (parts.length !== 2) return;
-    const slugPart = parts[1].toLowerCase();
-    const matches = postSlugs.filter((slug) =>
-      slug.toLowerCase().startsWith(slugPart)
-    );
-    if (!matches.length) return;
-    if (matches.length === 1) {
-      input.value = parts[0] + " " + matches[0] + " ";
+  function switchToTerminal() {
+    if (!terminalWrapper || !guiMode || !toggleBtn) return;
+    terminalWrapper.classList.remove("hidden");
+    guiMode.classList.add("hidden");
+    toggleBtn.textContent = "GUI Mode";
+  }
+
+  // Button click
+  toggleBtn?.addEventListener("click", () => {
+    const isTerminal = !terminalWrapper?.classList.contains("hidden");
+    if (isTerminal) {
+      switchToGUI();
     } else {
-      appendLine(`<span class="text-gray-400">${matches.join(" ")}</span>`);
-    }
-  }
-
-  function toggleMode() {
-    if (!terminalMode || !guiMode || !toggleBtn || !input) return;
-    const isGUI = terminalMode.classList.contains("hidden");
-    terminalMode.classList.toggle("hidden", !isGUI);
-    guiMode.classList.toggle("hidden", isGUI);
-    toggleBtn.textContent = isGUI ? "GUI Mode" : "Terminal Mode";
-    if (!isGUI) input.focus();
-  }
-
-  // Boot — runs only once
-  async function bootAnimation() {
-    if (!output || !input) return;
-    output.innerHTML = "";
-    input.style.display = "none";
-
-    const bootLines = [
-      '<span class="text-green-400">Linux 6.6.0-jabublog (jabu@root)</span>',
-      "Mounting /blog... OK",
-      `Loading posts... ${posts.length} found`,
-      "",
-      '--> Type <span class="text-yellow-400">help</span> • Tab for autocomplete • ↑/↓ for history',
-    ];
-
-    for (const line of bootLines) {
-      appendLine(line);
-      await new Promise((r) => setTimeout(r, 120));
-    }
-
-    input.style.display = "block";
-    input.focus();
-  }
-
-  // Events
-  toggleBtn?.addEventListener("click", toggleMode);
-
-  input?.addEventListener("keydown", (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-      const cmdLine = input.value.trim();
-      if (cmdLine) {
-        if (history.at(-1) !== cmdLine) history.push(cmdLine);
-        historyIndex = history.length;
-        appendLine(cmdLine, true);
-        const [cmd, ...args] = cmdLine.split(" ");
-        const handler = commands[cmd];
-        handler
-          ? appendLine(handler(args))
-          : appendLine(
-              `<span class="text-red-400">bash: ${cmd}: command not found</span>`
-            );
-      }
-      input.value = "";
-    } else if (e.key === "ArrowUp" && historyIndex > 0) {
-      e.preventDefault();
-      input.value = history[--historyIndex];
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      historyIndex < history.length - 1
-        ? (input.value = history[++historyIndex])
-        : ((historyIndex = history.length), (input.value = ""));
-    } else if (e.key === "Tab") {
-      e.preventDefault();
-      autocomplete();
+      switchToTerminal();
     }
   });
 
-  terminalMode?.addEventListener("click", () => input?.focus());
-
-  // Run boot only once on load
-  window.addEventListener("load", () => setTimeout(bootAnimation, 100));
+  // Listen for 'gui' command from terminal
+  document.addEventListener("toggle-gui", switchToGUI);
 </script>

@@ -1,0 +1,133 @@
+---
+import Dir from "../Dir.astro";
+---
+
+<div
+  class="font-mono text-cyan-400 p-2 bg-black rounded-md min-h-96 relative overflow-hidden crt"
+>
+  <!-- Scanlines & Glow — the magic is back -->
+  <div class="crt-scanlines"></div>
+  <div class="crt-glow"></div>
+
+  <div id="output" class="mb-4 space-y-1 text-sm relative z-10"></div>
+  <div class="flex items-center relative z-10">
+    <Dir dir="jabublog@root:~#" />
+    <input
+      id="terminal-input"
+      type="text"
+      class="bg-transparent outline-none flex-1 ml-2 text-cyan-400 caret-cyan-400"
+      autocomplete="off"
+      autofocus
+    />
+    <span
+      id="cursor"
+      class="inline-block w-2 h-5 bg-cyan-400 ml-1 animate-blink"></span>
+  </div>
+
+  <!-- Live clock -->
+  <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+    <span id="live-clock"></span>
+  </div>
+</div>
+
+<style>
+  .crt {
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+  .crt-scanlines {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    animation: scan 10s linear infinite;
+    z-index: 5;
+  }
+  .crt-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at center,
+      transparent 60%,
+      rgba(0, 255, 255, 0.08) 100%
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+  @keyframes scan {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(4px);
+    }
+  }
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+</style>
+
+<script>
+  // Extend window
+  declare global {
+    interface Window {
+      blogPosts: any[];
+      loadTime: number;
+    }
+  }
+
+  // Make posts available
+  const container = document.querySelector("[data-posts]");
+  if (container instanceof HTMLElement && container.dataset.posts) {
+    window.blogPosts = JSON.parse(container.dataset.posts);
+  } else {
+    window.blogPosts = [];
+  }
+  window.loadTime = Date.now();
+
+  const output = document.getElementById("output");
+  const input = document.getElementById(
+    "terminal-input"
+  ) as HTMLInputElement | null;
+
+  const onCommand = (text: string, isUser = false) => {
+    if (!output) return;
+    const line = document.createElement("div");
+    line.innerHTML = isUser
+      ? `<span class="text-gray-500">jabublog@root:~#</span> ${text}`
+      : text;
+    output.appendChild(line);
+    output.scrollTop = output.scrollHeight;
+  };
+
+  // Import and use the hook
+  import { useTerminal } from "./useTerminal.js";
+  const { bootAnimation } = useTerminal({ output, input, onCommand });
+
+  // Power on
+  const hasBooted = sessionStorage.getItem("jabublog-booted");
+  const powerOnScreen = document.getElementById("power-on");
+  if (!hasBooted && powerOnScreen) {
+    const boot = () => {
+      powerOnScreen.remove();
+      sessionStorage.setItem("jabublog-booted", "true");
+      bootAnimation();
+    };
+    document.addEventListener("keydown", boot, { once: true });
+    powerOnScreen.addEventListener("click", boot, { once: true });
+  } else {
+    powerOnScreen?.remove();
+    bootAnimation();
+  }
+</script>

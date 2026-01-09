@@ -1,0 +1,16 @@
+---
+import Dir from "../Dir.astro";
+---
+
+<div class="flex items-center relative z-10">
+  <Dir dir="jabublog@root:~#" />
+  <input
+    id="terminal-input"
+    type="text"
+    class="bg-transparent outline-none flex-1 ml-2 text-cyan-400 caret-cyan-400"
+    autocomplete="off"
+    autofocus
+  />
+  <span id="cursor" class="inline-block w-2 h-5 bg-cyan-400 ml-1 animate-blink"
+  ></span>
+</div>

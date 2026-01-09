@@ -1,0 +1,63 @@
+---
+import Dir from "./Dir.astro";
+
+interface Props {
+  posts: {
+    slug: string;
+    title: string;
+    description?: string;
+    pubDate: string;
+    image?: string | null;
+  }[];
+}
+
+const { posts } = Astro.props;
+---
+
+<div id="gui-mode" class="block mt-2">
+  <Dir dir="jabublog-[~]" class="mb-6" />
+  <section
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6"
+  >
+    {
+      posts.map((post) => (
+        <article class="rounded-lg shadow-md overflow-hidden flex sm:block bg-white">
+          <div class="w-[40%] sm:w-full h-auto sm:h-64 bg-gray-800">
+            {post.image ? (
+              <img
+                src={post.image}
+                alt={post.title}
+                class="w-full h-full object-cover"
+              />
+            ) : (
+              <div class="w-full h-full bg-gray-700 flex items-center justify-center text-gray-500 text-sm">
+                No image
+              </div>
+            )}
+          </div>
+          <div class="w-[60%] sm:w-full p-4 bg-amber-100 flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-lg mb-2">{post.title}</h3>
+              {post.description && (
+                <p class="text-sm text-gray-700 mb-3">{post.description}</p>
+              )}
+              <time class="text-xs text-gray-500">
+                {new Date(post.pubDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </time>
+            </div>
+            <a
+              href={`/blog/${post.slug}`}
+              class="text-cyan-600 hover:underline text-sm mt-1 inline-block"
+            >
+              cat {post.slug} →
+            </a>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+</div>
