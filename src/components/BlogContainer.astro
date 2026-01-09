@@ -20,24 +20,28 @@ const serializedPosts = posts.map((post) => ({
 ---
 
 <div
-  class="w-[98%] md:w-[70%] m-auto text-black relative"
+  class="w-[98%] md:w-[70%] m-auto text-black dark:text-cyan-400 relative transition-colors duration-500"
   data-posts={JSON.stringify(serializedPosts)}
 >
   <!-- mode toggle -->
   <button
     id="mode-toggle"
-    class="absolute top-4 right-4 px-4 py-1 mx-1 my-1 bg-black text-cyan-400 font-mono text-sm rounded border border-cyan-600 hover:bg-cyan-900 transition z-10"
+    class="absolute top-1 right-1 px-4 py-1 bg-black text-cyan-400 font-mono text-sm rounded border border-cyan-600 hover:bg-cyan-900 transition z-50"
   >
     GUI Mode
   </button>
 
-  <!-- terminal -->
+  <!-- TERMINAL WITH CRT EFFECT -->
   <div
     id="terminal-mode"
-    class="font-mono text-cyan-400 bg-black rounded-md min-h-96"
+    class="font-mono text-cyan-400 p-2 bg-black rounded-md min-h-96 relative overflow-hidden crt"
   >
-    <div id="output" class="mb-4 space-y-1 text-sm"></div>
-    <div class="flex items-center">
+    <!-- Scanlines & Glow -->
+    <div class="crt-scanlines"></div>
+    <div class="crt-glow"></div>
+
+    <div id="output" class="mb-4 space-y-1 text-sm relative z-10"></div>
+    <div class="flex items-center relative z-10">
       <Dir dir="jabublog@root:~#" />
       <input
         id="terminal-input"
@@ -52,15 +56,15 @@ const serializedPosts = posts.map((post) => ({
     </div>
   </div>
 
-  <!-- gui -->
-  <div id="gui-mode" class="hidden">
+  <!-- GUI MODE -->
+  <div id="gui-mode" class="hidden mt-8">
     <Dir dir="jabublog-[~]" class="mb-6" />
     <section
       class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6"
     >
       {
         posts.map((post) => (
-          <article class="rounded-lg shadow-md overflow-hidden flex sm:block bg-white">
+          <article class="rounded-lg shadow-md overflow-hidden flex sm:block bg-white dark:bg-gray-900 transition-colors duration-300">
             <div class="w-[40%] sm:w-full h-auto sm:h-64 bg-gray-800">
               {post.data.image ? (
                 <img
@@ -74,15 +78,15 @@ const serializedPosts = posts.map((post) => ({
                 </div>
               )}
             </div>
-            <div class="w-[60%] sm:w-full p-4 bg-amber-100 flex flex-col justify-between">
+            <div class="w-[60%] sm:w-full p-4 bg-amber-100 dark:bg-gray-800 flex flex-col justify-between transition-colors duration-300">
               <div>
                 <h3 class="font-bold text-lg mb-2">{post.data.title}</h3>
                 {post.data.description && (
-                  <p class="text-sm text-gray-700 mb-3">
+                  <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">
                     {post.data.description}
                   </p>
                 )}
-                <time class="text-xs text-gray-500">
+                <time class="text-xs text-gray-500 dark:text-gray-400">
                   {post.data.pubDate.toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
@@ -104,8 +108,57 @@ const serializedPosts = posts.map((post) => ({
   </div>
 </div>
 
+<style>
+  /* CRT Effect */
+  .crt {
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+  .crt-scanlines {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    animation: scan 10s linear infinite;
+    z-index: 5;
+  }
+  .crt-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at center,
+      transparent 60%,
+      rgba(0, 255, 255, 0.08) 100%
+    );
+    pointer-events: none;
+    z-index: 5;
+  }
+  @keyframes scan {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(4px);
+    }
+  }
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+</style>
+
 <script>
-  //  Types
+  // Types
   type Post = {
     slug: string;
     title: string;
@@ -113,16 +166,15 @@ const serializedPosts = posts.map((post) => ({
     pubDate: string;
     image?: string | null;
   };
-
   type CommandFn = (args?: string[]) => string;
 
-  //  Posts
+  // Posts
   const container = document.querySelector("[data-posts]");
   const posts: Post[] = container
     ? (JSON.parse((container as HTMLElement).dataset.posts || "[]") as Post[])
     : [];
 
-  //  DOM
+  // DOM
   const output = document.getElementById("output");
   const input = document.getElementById(
     "terminal-input"
@@ -133,44 +185,40 @@ const serializedPosts = posts.map((post) => ({
     "mode-toggle"
   ) as HTMLButtonElement | null;
 
-  //  History
+  // History
   const history: string[] = [];
   let historyIndex = -1;
 
-  //  Post slugs ONLY (autocomplete source)
+  // Post slugs ONLY (autocomplete source)
   const postSlugs = posts.map((p) => p.slug).sort();
 
-  //  Commands
+  // Commands
   const commands: Record<string, CommandFn> = {
     help: () => {
       const lines = [
         '<span class="text-cyan-300">Available commands:</span>',
         "",
-        '  <br> &nbsp;&nbsp; - <span class="text-yellow-400">ls</span>             List all blog posts',
-        '  <br> &nbsp;&nbsp; - <span class="text-yellow-400">cat</span> <slug>      Preview a post summary',
-        '  <br> &nbsp;&nbsp; - <span class="text-yellow-400">open</span> <slug>     Open full post in GUI',
-        '  <br> &nbsp;&nbsp; - <span class="text-yellow-400">clear</span>          Clear the terminal',
-        '  <br> &nbsp;&nbsp; - <span class="text-yellow-400">gui</span>            Switch to GUI mode',
-        '  <br> &nbsp;&nbsp; - <span class="text-yellow-400">help</span>           Show this help message',
+        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">ls</span> List all blog posts',
+        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">cat</span> <slug> Preview a post summary',
+        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">open</span> <slug> Open full post in GUI',
+        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">clear</span> Clear the terminal',
+        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">gui</span> Switch to GUI mode',
+        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">help</span> Show this help message',
         "",
         ' <br> <span class="text-green-400">Tip:</span> <br> &nbsp;&nbsp; • Tab for autocomplete <br> &nbsp;&nbsp;• ↑/↓ for history',
       ];
       return lines.join("\n");
     },
-
     ls: () =>
       posts.map((p) => `${p.slug.padEnd(35)} (${p.pubDate})`).join("\n"),
-
     cat: (args = []) => {
       if (!args[0]) return "Usage: cat <post-slug>";
       const post = posts.find((p) => p.slug === args[0]);
       if (!post)
         return `cat: ${args[0]}: No such file or directory\nHint: Use 'ls'`;
-
       let out = `
 <span class="text-cyan-300 font-bold text-lg">${post.title}</span>
 <span class="text-gray-500 text-sm">${post.pubDate} • jabublog@root</span>
-
 `;
       if (post.image)
         out += `<span class="text-yellow-300">[Image: ${post.image}]</span>\n\n`;
@@ -178,12 +226,10 @@ const serializedPosts = posts.map((post) => ({
       out += `
 <span class="text-green-400">>>> Full post available in GUI</span>
 <span class="text-yellow-300">Tip: open ${post.slug}</span>
-
 <span class="text-gray-500">~ preview of ${args[0]} ~</span>
       `.trim();
       return out;
     },
-
     open: (args = []) => {
       if (!args[0]) return "Usage: open <post-slug>";
       const post = posts.find((p) => p.slug === args[0]);
@@ -191,19 +237,17 @@ const serializedPosts = posts.map((post) => ({
       window.location.href = `/blog/${args[0]}`;
       return `Opening "${post.title}"...`;
     },
-
     clear: () => {
       if (output) output.innerHTML = "";
       return "";
     },
-
     gui: () => {
       toggleMode();
       return "Switching to GUI...";
     },
   };
 
-  //  Helpers
+  // Helpers
   function appendLine(text: string, isCommand = false) {
     if (!output) return;
     const line = document.createElement("div");
@@ -214,36 +258,24 @@ const serializedPosts = posts.map((post) => ({
     output.scrollTop = output.scrollHeight;
   }
 
-  //  AUTOCOMPLETE (POST SLUGS ONLY)
+  // AUTOCOMPLETE (POST SLUGS ONLY)
   function autocomplete() {
     if (!input) return;
-
     const value = input.value;
     const cursor = input.selectionStart ?? value.length;
-
-    // IMPORTANT: do NOT trim
     const beforeCursor = value.slice(0, cursor);
-
-    // Require at least ONE SPACE (command must be finished)
     if (!beforeCursor.includes(" ")) return;
-
     const parts = beforeCursor.split(" ");
-
-    // Only autocomplete SECOND WORD (slug)
     if (parts.length !== 2) return;
-
     const slugPart = parts[1].toLowerCase();
-
     const matches = postSlugs.filter((slug) =>
       slug.toLowerCase().startsWith(slugPart)
     );
-
     if (!matches.length) return;
-
     if (matches.length === 1) {
       input.value = parts[0] + " " + matches[0] + " ";
     } else {
-      appendLine(`<span class="text-gray-400">${matches.join("    ")}</span>`);
+      appendLine(`<span class="text-gray-400">${matches.join(" ")}</span>`);
     }
   }
 
@@ -256,7 +288,7 @@ const serializedPosts = posts.map((post) => ({
     if (!isGUI) input.focus();
   }
 
-  //  Boot
+  // Boot — runs only once
   async function bootAnimation() {
     if (!output || !input) return;
     output.innerHTML = "";
@@ -279,7 +311,7 @@ const serializedPosts = posts.map((post) => ({
     input.focus();
   }
 
-  //  Events
+  // Events
   toggleBtn?.addEventListener("click", toggleMode);
 
   input?.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -289,7 +321,6 @@ const serializedPosts = posts.map((post) => ({
         if (history.at(-1) !== cmdLine) history.push(cmdLine);
         historyIndex = history.length;
         appendLine(cmdLine, true);
-
         const [cmd, ...args] = cmdLine.split(" ");
         const handler = commands[cmd];
         handler
@@ -315,5 +346,6 @@ const serializedPosts = posts.map((post) => ({
 
   terminalMode?.addEventListener("click", () => input?.focus());
 
-  bootAnimation();
+  // Run boot only once on load
+  window.addEventListener("load", () => setTimeout(bootAnimation, 100));
 </script>
