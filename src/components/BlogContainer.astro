@@ -158,6 +158,13 @@ const serializedPosts = posts.map((post) => ({
 </style>
 
 <script>
+  // For uptime calculation
+  declare global {
+    interface Window {
+      loadTime: number;
+    }
+  }
+  window.loadTime = Date.now();
   // Types
   type Post = {
     slug: string;
@@ -204,8 +211,9 @@ const serializedPosts = posts.map((post) => ({
         ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">clear</span> Clear the terminal',
         ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">gui</span> Switch to GUI mode',
         ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">help</span> Show this help message',
+        ' <br> &nbsp;&nbsp; - <span class="text-yellow-400">neofetch</span> Show system info',
         "",
-        ' <br> <span class="text-green-400">Tip:</span> <br> &nbsp;&nbsp; • Tab for autocomplete <br> &nbsp;&nbsp;• ↑/↓ for history',
+        ' <br> <span class="text-green-400">Tip:</span> <br> &nbsp;&nbsp; • Tab for autocomplete <br> &nbsp;&nbsp;&nbsp;• ↑/↓ for history',
       ];
       return lines.join("\n");
     },
@@ -244,6 +252,41 @@ const serializedPosts = posts.map((post) => ({
     gui: () => {
       toggleMode();
       return "Switching to GUI...";
+    },
+    neofetch: () => {
+      const uptimeMinutes = Math.floor((Date.now() - window.loadTime) / 60000);
+      const uptime =
+        uptimeMinutes < 60
+          ? `${uptimeMinutes}m`
+          : `${Math.floor(uptimeMinutes / 60)}h ${uptimeMinutes % 60}m`;
+
+      const asciiArt = `
+<span class="text-cyan-400">     ██╗ █████╗ ██████╗ ██╗   ██╗</span>
+<span class="text-cyan-400">     ██║██╔══██╗██╔══██╗██║   ██║</span>
+<span class="text-cyan-300">     ██║███████║██████╔╝██║   ██║</span>
+<span class="text-cyan-300">██   ██║██╔══██║██╔══██╗██║   ██║</span>
+<span class="text-cyan-400">╚█████╔╝██║  ██║██████╔╝╚██████╔╝</span>
+<span class="text-cyan-400"> ╚════╝ ╚═╝  ╚═╝╚═════╝  ╚═════╝ </span>
+      `.trim();
+
+      const info = `
+<span class="text-cyan-300">jabu@jabublog</span>
+<span class="text-gray-500">────────────────</span>
+<span class="text-yellow-400">OS:</span> jabublog OS (Astro)
+<span class="text-yellow-400">Host:</span> vercel.app
+<span class="text-yellow-400">Uptime:</span> ${uptime}
+<span class="text-yellow-400">Posts:</span> ${posts.length}
+<span class="text-yellow-400">Shell:</span> jabush v0.1
+
+<span class="text-cyan-400">███</span><span class="text-blue-500">███</span><span class="text-magenta-400">███</span><span class="text-red-500">███</span><span class="text-yellow-300">███</span><span class="text-green-400">███</span>
+      `.trim();
+
+      return `
+<div class="flex flex-col md:flex-row gap-10 items-start">
+  <pre class="font-mono text-sm leading-tight">${asciiArt}</pre>
+  <pre class="font-mono text-sm leading-tight">${info}</pre>
+</div>
+      `;
     },
   };
 
