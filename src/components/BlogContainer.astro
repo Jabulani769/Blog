@@ -13,7 +13,6 @@ const posts = allPosts.sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
 
-// Serialize for both terminal commands AND BlogList
 const serializedPosts = posts.map((post) => ({
   slug: post.slug,
   title: post.data.title,
@@ -27,30 +26,30 @@ const serializedPosts = posts.map((post) => ({
   class="w-[98%] md:w-[70%] m-auto relative"
   data-posts={JSON.stringify(serializedPosts)}
 >
-  <!-- Mode toggle -->
+  <!-- Mode toggle (now says "Terminal Mode" by default) -->
   <button
     id="mode-toggle"
     class="absolute top-1 right-1 px-4 py-1 bg-black text-cyan-400 font-mono text-sm rounded border border-cyan-600 hover:bg-cyan-900 transition z-50"
   >
-    GUI Mode
+    Terminal Mode
   </button>
 
   <!-- Power on screen -->
   <PowerOnScreen />
 
-  <!-- TERMINAL (visible by default) -->
-  <div id="terminal-wrapper" class="block">
+  <!-- TERMINAL (hidden by default now) -->
+  <div id="terminal-wrapper" class="hidden">
     <Terminal />
   </div>
 
-  <!-- GUI MODE (hidden by default) -->
-  <div id="gui-mode" class="hidden">
+  <!-- GUI MODE (visible by default) -->
+  <div id="gui-mode" class="block mt-8">
     <BlogList posts={serializedPosts} client:load />
   </div>
 </div>
 
 <script>
-  // Global data
+  // Global data for terminal commands
   const container = document.querySelector("[data-posts]");
   if (container instanceof HTMLElement && container.dataset.posts) {
     window.blogPosts = JSON.parse(container.dataset.posts);
@@ -66,7 +65,17 @@ const serializedPosts = posts.map((post) => ({
   const terminalWrapper = document.getElementById("terminal-wrapper");
   const guiMode = document.getElementById("gui-mode");
 
-  // Shared toggle function
+  // Toggle function
+  function switchToTerminal() {
+    if (!terminalWrapper || !guiMode || !toggleBtn) return;
+    terminalWrapper.classList.remove("hidden");
+    guiMode.classList.add("hidden");
+    toggleBtn.textContent = "GUI Mode";
+    // Optional: focus the input when switching to terminal
+    const input = document.getElementById("terminal-input");
+    input?.focus();
+  }
+
   function switchToGUI() {
     if (!terminalWrapper || !guiMode || !toggleBtn) return;
     terminalWrapper.classList.add("hidden");
@@ -74,23 +83,17 @@ const serializedPosts = posts.map((post) => ({
     toggleBtn.textContent = "Terminal Mode";
   }
 
-  function switchToTerminal() {
-    if (!terminalWrapper || !guiMode || !toggleBtn) return;
-    terminalWrapper.classList.remove("hidden");
-    guiMode.classList.add("hidden");
-    toggleBtn.textContent = "GUI Mode";
-  }
-
-  // Button click
+  // Button click handler
   toggleBtn?.addEventListener("click", () => {
-    const isTerminal = !terminalWrapper?.classList.contains("hidden");
-    if (isTerminal) {
+    if (!terminalWrapper) return;
+    const showingTerminal = !terminalWrapper.classList.contains("hidden");
+    if (showingTerminal) {
       switchToGUI();
     } else {
       switchToTerminal();
     }
   });
 
-  // Listen for 'gui' command from terminal
+  // Optional: make "gui" command switch back to GUI
   document.addEventListener("toggle-gui", switchToGUI);
 </script>
